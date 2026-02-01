@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will You Be My Valentine?</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #ffdde1; /* Light pink background */
+            background-image: linear-gradient(to right, #ffdde1, #ee9ca7);
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            overflow: hidden; /* Prevents scrollbars when button moves */
+        }
+
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            max-width: 90%;
+        }
+
+        h1 {
+            color: #ff4b6e;
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+        }
+
+        .heart {
+            font-size: 50px;
+            color: #ff4b6e;
+            animation: beat 1s infinite alternate;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            position: relative; /* Needed for button movement logic */
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            font-weight: bold;
+        }
+
+        #yesBtn {
+            background-color: #ff4b6e;
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 75, 110, 0.4);
+        }
+
+        #yesBtn:hover {
+            transform: scale(1.1);
+            background-color: #ff2e56;
+        }
+
+        #noBtn {
+            background-color: #e0e0e0;
+            color: #555;
+            position: relative; /* Allows movement */
+        }
+
+        /* Animation for the mobile jump */
+        @keyframes jump {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-100px); } /* Jumps up */
+            100% { transform: translateY(0); } /* Lands back */
+        }
+
+        .jumping {
+            animation: jump 0.4s ease-in-out;
+        }
+
+        /* Heartbeat animation */
+        @keyframes beat {
+            to { transform: scale(1.1); }
+        }
+
+        /* Hidden success message */
+        #success-message {
+            display: none;
+            color: #ff4b6e;
+            font-size: 2rem;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="heart">Komal Baby❤️</div>
+        <h1>Will you be my Valentine?</h1>
+        
+        <div class="buttons">
+            <button id="yesBtn">YES</button>
+            <button id="noBtn">NO</button>
+        </div>
+
+        <div id="success-message">
+            Yay! See you on the 14th! 💖
+        </div>
+    </div>
+
+    <script>
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.getElementById('yesBtn');
+        const successMessage = document.getElementById('success-message');
+        const questionText = document.querySelector('h1');
+        const buttonsContainer = document.querySelector('.buttons');
+
+        // Function to move button randomly (Desktop)
+        function moveButton() {
+            // Get window dimensions
+            const containerRect = document.querySelector('.container').getBoundingClientRect();
+            
+            // Calculate limits so it doesn't go too far off screen
+            const maxX = window.innerWidth - noBtn.offsetWidth;
+            const maxY = window.innerHeight - noBtn.offsetHeight;
+
+            const randomX = Math.random() * (maxX - 100) + 50;
+            const randomY = Math.random() * (maxY - 100) + 50;
+
+            noBtn.style.position = 'fixed'; // Change to fixed to move freely
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
+        }
+
+        // DESKTOP: Run away on hover
+        noBtn.addEventListener('mouseenter', () => {
+            // Check if device has a mouse (not a touchscreen) to avoid weird mobile behavior
+            if (window.matchMedia("(pointer: fine)").matches) {
+                moveButton();
+            }
+        });
+
+        // MOBILE: Jump on click/tap
+        noBtn.addEventListener('click', (e) => {
+            // On mobile, 'mouseenter' often doesn't fire correctly, so we use click.
+            // If they manage to click it (or tap it on mobile):
+            e.preventDefault();
+            
+            // Add the jumping class to trigger animation
+            noBtn.classList.add('jumping');
+
+            // Remove the class after animation finishes so it can trigger again
+            setTimeout(() => {
+                noBtn.classList.remove('jumping');
+            }, 400); // 400ms matches the CSS animation duration
+        });
+
+        // YES Button Logic
+        yesBtn.addEventListener('click', () => {
+            questionText.style.display = 'none';
+            buttonsContainer.style.display = 'none';
+            successMessage.style.display = 'block';
+            
+            // Optional: Launch confetti or change background here
+            document.querySelector('.heart').style.fontSize = "100px";
+        });
+    </script>
+</body>
+</html>
